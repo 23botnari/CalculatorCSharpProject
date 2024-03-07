@@ -66,7 +66,7 @@ namespace Calculator
             else if (operand.Equals("/")) return firstNumber / secondNumber;
             else if (operand.Equals("+")) return firstNumber + secondNumber;
             else if (operand.Equals("^")) return Math.Pow(firstNumber, secondNumber);
-            else return firstNumber - secondNumber; // mata - tatu
+            else return firstNumber - secondNumber; 
         }
 
         private bool contains(string text, string subText)
@@ -78,6 +78,7 @@ namespace Calculator
         {
             if (contains(text, "√")) return "√";
             else if (contains(text, "log")) return "log";
+            else if (contains(text, "ln")) return "ln";
             else if (contains(text, "arcsin")) return "arcsin";
             else if (contains(text, "arccos")) return "arccos";
             else if (contains(text, "arctan")) return "arctan";
@@ -109,8 +110,15 @@ namespace Calculator
             string textValue = funcText.Substring(from, to);
             double value = double.Parse(calc(textValue));
 
-            if (func.Equals("√"))return Math.Sqrt(value);
-            else if (func.Equals("log"))  return Math.Log(value);
+            if (func.Equals("√")) return Math.Sqrt(value);
+           else if (func.Equals("log"))
+            {
+                int f = funcText.IndexOf('[') + 1;
+                int t = funcText.IndexOf(']') - f;
+                double logBase = double.Parse(funcText.Substring(f, t));
+                return Math.Log(value, logBase);
+            }
+            else if (func.Equals("ln")) return Math.Log(value);
             else if (func.Equals("arcsin")) return Math.Asin(value);
             else if (func.Equals("arccos")) return Math.Acos(value);
             else if (func.Equals("arctan")) return Math.Atan(value);
@@ -142,9 +150,11 @@ namespace Calculator
             text = text.Replace("-+", "-");
             text = text.Replace("+-", "-");
             text = text.Replace("π", "3.1415926535897932384626433832795");
+            text = text.Replace("e", "2.71828182846");
+
         }
 
-     
+
 
         private void calcFunction(ref string text, string function)
         {
@@ -181,7 +191,28 @@ namespace Calculator
                 }
             }
         }
+        private void calcBrackets(ref string text)
+        {
+            int startIndex = text.IndexOf('[');
+            int endIndex, count = 1;
 
+            for (endIndex = startIndex + 1; endIndex < text.Length; endIndex++)
+            {
+                if (text[endIndex] == '[') count++;
+                else if (text[endIndex] == ']') count--;
+                if (count == 0) break;
+            }
+            string baseText = text.Substring(startIndex + 1, endIndex - startIndex - 1);
+            string func = getNextFunction(baseText);
+            string op = getNextOperand(baseText);
+            if (func != null || op != null || baseText.Contains('!'))
+            {
+                string tempText = text.Substring(0, startIndex + 1)
+                                + calc(baseText)
+                                + text.Substring(endIndex, text.Length - endIndex);
+                text = tempText;
+            }
+        }
         private void calcFactorial(ref string text)
         {
             int indx = text.IndexOf("!");
@@ -202,13 +233,13 @@ namespace Calculator
             string tempText = text.Substring(0, from) + result + text.Substring(to, text.Length - to);
             text = calc(tempText);
         }
-
+     
         private string calc(string text)
         {
             try
             {
                 cleanText(ref text);
-
+                if (text.Contains('[')) calcBrackets(ref text);
                 string function = getNextFunction(text);
                 if (function != null) calcFunction(ref text, function);
 

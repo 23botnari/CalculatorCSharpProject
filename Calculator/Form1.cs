@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Calculator
 {
@@ -80,10 +81,19 @@ namespace Calculator
         private void on_click_log(object sender, EventArgs e)
         {
             cursorIndex = tbInput.SelectionStart;
-            newText = tbInput.Text.Substring(0, cursorIndex) + "log(" + tbInput.Text.Substring(cursorIndex, tbInput.Text.Length - cursorIndex)+ ")";
+            newText = tbInput.Text.Substring(0, cursorIndex) + "log[10](" + tbInput.Text.Substring(cursorIndex, tbInput.Text.Length - cursorIndex)+ ")";
             tbInput.Text = newText;
             ActiveControl = tbInput;
-            tbInput.SelectionStart =  cursorIndex +4;
+            tbInput.SelectionStart = cursorIndex + 7;
+            tbInput.SelectionLength = 0;
+        }
+        private void on_click_ln(object sender, EventArgs e)
+        {
+            cursorIndex = tbInput.SelectionStart;
+            newText = tbInput.Text.Substring(0, cursorIndex) + "ln(" + tbInput.Text.Substring(cursorIndex, tbInput.Text.Length - cursorIndex) + ")";
+            tbInput.Text = newText;
+            ActiveControl = tbInput;
+            tbInput.SelectionStart = cursorIndex + 3;
             Console.WriteLine(cursorIndex);
             tbInput.SelectionLength = 0;
         }
@@ -141,12 +151,39 @@ namespace Calculator
 
         private void tbResult_KeyPress(object sender, KeyPressEventArgs e)
         {
-            // preventing user from editing the result text box
+
             if (e.KeyChar != 'c' - 96) // except: CTRL + C (copy result)
             {
                 e.Handled = true;
             }
         }
+       
+        private void deleteLastOperand()
+        {
+            if (!string.IsNullOrEmpty(tbInput.Text))
+            {
+                int index = tbInput.Text.Length - 1;
+                while (index >= 0 && !char.IsDigit(tbInput.Text[index]))
+                {
+                    index--;
+                }
+                while (index >= 0 && char.IsDigit(tbInput.Text[index]))
+                {
+                    index--;
+                }
+                index++;
+                if (index < tbInput.Text.Length)
+                {
+                    tbInput.Text = tbInput.Text.Remove(index);
+                }
+            }
+        }
+
+        private void on_click_ce(object sender, EventArgs e)
+        {
+            deleteLastOperand();
+        }
+
 
         private void getResult()
         {
@@ -154,5 +191,7 @@ namespace Calculator
             tbResult.ForeColor = color;
             tbResult.Text = result;
         }
+
+       
     }
 }
