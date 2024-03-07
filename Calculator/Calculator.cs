@@ -66,7 +66,7 @@ namespace Calculator
             else if (operand.Equals("/")) return firstNumber / secondNumber;
             else if (operand.Equals("+")) return firstNumber + secondNumber;
             else if (operand.Equals("^")) return Math.Pow(firstNumber, secondNumber);
-            else return firstNumber - secondNumber;
+            else return firstNumber - secondNumber; // mata - tatu
         }
 
         private bool contains(string text, string subText)
@@ -173,7 +173,7 @@ namespace Calculator
                 {
                     endIndex = i;
                     string tempText = text.Substring(0, startIndex)
-                             + ((startIndex > 0 && Char.IsDigit(text[startIndex - 1])) ? "*" : "") // 5(1+2) = 5*(1+2)
+                             + ((startIndex > 0 && Char.IsDigit(text[startIndex - 1])) ? "*" : "")
                              + calc(text.Substring(startIndex + 1, endIndex - startIndex - 1));
                     if (endIndex + 1 < text.Length)
                         tempText += text.Substring(endIndex + 1, text.Length - endIndex - 1);
