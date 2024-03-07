@@ -59,9 +59,9 @@ namespace Calculator
         private void on_click_inverse_function(object sender, EventArgs e)
         {
             Button b = (Button)sender;
-            string func = b.Text.Substring(0, 3);
+            string func = b.Text.Substring(3, 3);
             cursorIndex = tbInput.SelectionStart;
-            newText = tbInput.Text.Substring(0, cursorIndex) + "arc" + func + "(" + tbInput.Text.Substring(cursorIndex, tbInput.Text.Length - cursorIndex);
+            newText = tbInput.Text.Substring(0, cursorIndex) + "arc" + func + "(" + tbInput.Text.Substring(cursorIndex, tbInput.Text.Length - cursorIndex)+")";
             tbInput.Text = newText;
             ActiveControl = tbInput;
             tbInput.SelectionStart = cursorIndex + 7;
@@ -83,7 +83,7 @@ namespace Calculator
             newText = tbInput.Text.Substring(0, cursorIndex) + "log(" + tbInput.Text.Substring(cursorIndex, tbInput.Text.Length - cursorIndex)+ ")";
             tbInput.Text = newText;
             ActiveControl = tbInput;
-            tbInput.SelectionStart =  4;
+            tbInput.SelectionStart =  cursorIndex +4;
             Console.WriteLine(cursorIndex);
             tbInput.SelectionLength = 0;
         }
@@ -105,7 +105,7 @@ namespace Calculator
             newText = tbInput.Text.Substring(0, cursorIndex) + "!" + tbInput.Text.Substring(cursorIndex, tbInput.Text.Length - cursorIndex);
             tbInput.Text = newText;
             ActiveControl = tbInput;
-            tbInput.SelectionStart = cursorIndex + 1;
+            tbInput.SelectionStart = cursorIndex;
             tbInput.SelectionLength = 0;
         }
 
